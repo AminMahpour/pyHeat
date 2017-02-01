@@ -26,10 +26,12 @@ def bedreader(file, min=50, max=50):
         yield out
 
 
-def get_value_from_pos(bwurl, bed, filename="out.txt", min=50, max=60):
+def get_value_from_pos(bwurl, bed, min=50, max=60):
     bw = BigwigObj(bwurl)
     data = []
     data_output = []
+    data_out = bed+".sorted.txt"
+
     for i in bedreader(bed):
         scores = None
         #print("processing position", i)
@@ -40,40 +42,27 @@ def get_value_from_pos(bwurl, bed, filename="out.txt", min=50, max=60):
             print("Error occurred: {0}".format(e))
         if scores != None:
             if not np.isnan(np.mean(scores)):
-                data_output.append([i, scores, np.mean(scores[min:max])])
-                scores = [np.mean(scores[50:60])] + scores
+                data_output.append([i, np.mean(scores[min:max]), scores])
+    data = sorted(data_output, key=operator.itemgetter(1))
 
-                data.append(scores)
-
-    # sort stuff
-    data = sorted(data, key=operator.itemgetter(0))
-
-
+    out = open(data_out ,mode="w")
     for i in data:
-        pass
-        #print(len(i), i)
-    # out = open(filename, mode="w")
-
-    for i in data_output:
-        pass
-
-        #print("{0} {1} {2}\t".format(str(i[0][0]), str(i[0][1]), str(i[0][2])))
-        #sys.stdout.flush()
-        # out.write("{0} {1} {2}\t".format(str(i[0][0]), str(i[0][1]), str(i[0][2])))
-        # out.write("\t".join([str(x) for x in i[1]]))
-        # out.write("\t{0}".format(str(i[2])))
-        # out.write("\n")
-    # out.close()
+        out.write("{0}\t{1}\t{2}\n".format(i[0][0],i[0][1],i[0][2]))
+        print(i[0])
+    out.close()
 
     return data
+
+
+
 
 bed_file = sys.argv[1]
 bw_file = sys.argv[2]
 pdf_file = sys.argv[3]
 
 
-data = get_value_from_pos(bw_file, bed_file, "dnase.txt")
-rand = np.array(data)
+data = get_value_from_pos(bw_file, bed_file)
+rand = np.array([x[2] for x in data])
 
 fig = pp.figure(figsize=(3, 10), dpi=600)
 
