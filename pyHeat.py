@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import operator
 import pyBigWig
 import sys
@@ -31,29 +32,33 @@ def get_value_from_pos(bwurl, bed, filename="out.txt", min=50, max=60):
     data_output = []
     for i in bedreader(bed):
         scores = None
-        print("processing position", i)
+        #print("processing position", i)
 
         try:
             scores = bw.get_scores(i)
         except Exception as e:
             print("Error occurred: {0}".format(e))
+        if scores != None:
+            if not np.isnan(np.mean(scores)):
+                data_output.append([i, scores, np.mean(scores[min:max])])
+                scores = [np.mean(scores[50:60])] + scores
 
-        if not np.isnan(np.mean(scores)):
-            data_output.append([i, scores, np.mean(scores[min:max])])
-            scores = [np.mean(scores[50:60])] + scores
-
-            data.append(scores)
+                data.append(scores)
 
     # sort stuff
     data = sorted(data, key=operator.itemgetter(0))
 
+
     for i in data:
-        print(i)
+        pass
+        #print(len(i), i)
     # out = open(filename, mode="w")
 
     for i in data_output:
-        print("{0} {1} {2}\t".format(str(i[0][0]), str(i[0][1]), str(i[0][2])))
-        sys.stdout.flush()
+        pass
+
+        #print("{0} {1} {2}\t".format(str(i[0][0]), str(i[0][1]), str(i[0][2])))
+        #sys.stdout.flush()
         # out.write("{0} {1} {2}\t".format(str(i[0][0]), str(i[0][1]), str(i[0][2])))
         # out.write("\t".join([str(x) for x in i[1]]))
         # out.write("\t{0}".format(str(i[2])))
@@ -62,17 +67,22 @@ def get_value_from_pos(bwurl, bed, filename="out.txt", min=50, max=60):
 
     return data
 
+bed_file = sys.argv[1]
+bw_file = sys.argv[2]
+pdf_file = sys.argv[3]
 
-bw_file = sys.argv[1]
-bed_file = sys.argv[0]
-pdf_file = sys.argv[2]
+
 data = get_value_from_pos(bw_file, bed_file, "dnase.txt")
 rand = np.array(data)
 
-fig = pp.figure(figsize=(3, 6), dpi=600)
+fig = pp.figure(figsize=(3, 10), dpi=600)
 
-pp.pcolor(rand, cmap=pp.cm.bwr)
-pp.clim(-4, 4)
+blrd_color= pp.cm.bwr
+hot_color = pp.cm.hot
+
+
+pp.pcolor(rand, cmap=hot_color)
+pp.clim(0, 200)
 pp.colorbar()
 frame1 = pp.gca()
 
