@@ -78,7 +78,7 @@ fig = pp.figure(figsize=(3, 6), dpi=600)
 blrd_color= pp.cm.bwr
 hot_color = pp.cm.hot
 
-pp.subplot(2,2,1)
+pp.subplot(1,2,1)
 
 pp.pcolor(rand1, cmap=blrd_color)
 pp.clim(-4, 4)
@@ -97,7 +97,7 @@ for tick in frame1.axes.get_xticklines():
 for tick in frame1.axes.get_yticklines():
     tick.set_visible(False)
 
-pp.subplot(2,2,2)
+pp.subplot(1,2,2)
 pp.pcolor(rand2, cmap=hot_color)
 pp.clim(0, 200)
 
