@@ -39,7 +39,7 @@ def get_value_from_pos(bwurl, bwurl2, bed, min=50, max=60):
 
         try:
             scores = bw.get_scores(i)
-            print( len(scores))
+            #print( len(scores))
         except Exception as e:
             print("Error occurred: {0}".format(e))
         if scores != None:
@@ -53,7 +53,7 @@ def get_value_from_pos(bwurl, bwurl2, bed, min=50, max=60):
         coord = (i[0][0], int(i[0][1]), int(i[0][2]))
         try:
             scores = bw2.get_scores(coord)
-            print(len(scores))
+            #print(len(scores))
         except Exception as e:
             print("Error occurred: {0}".format(e))
 
@@ -69,23 +69,27 @@ bw_file = sys.argv[2]
 bw2_file = sys.argv[3]
 pdf_file = sys.argv[4]
 
+print("calculating...")
 data1, data2 = get_value_from_pos(bw_file,bw2_file, bed_file)
 rand1 = np.array([x[2] for x in data1])
 rand2 = np.array([x[2] for x in data2])
 
-fig = pp.figure(figsize=(3, 6), dpi=600)
+fig = pp.figure(figsize=(3, int(len(data1)/40) ), dpi=600)
 
 blrd_color= pp.cm.bwr
 hot_color = pp.cm.hot
 
+print("plotting...")
 pp.subplot(1,2,1)
-
+pp.title("Conservation")
 pp.pcolor(rand1, cmap=blrd_color)
 pp.clim(-4, 4)
 
-#pp.colorbar()
+cbar = pp.colorbar(orientation="horizontal")
+cbar.set_label("PhyloP", size=10)
+cbar.ax.tick_params(labelsize=5)
 frame1 = pp.gca()
-
+pp.ylabel("n={0}".format(len(data1)), fontsize=16, color="black")
 for xlabel_i in frame1.axes.get_xticklabels():
     xlabel_i.set_visible(False)
     xlabel_i.set_fontsize(0.0)
@@ -98,10 +102,13 @@ for tick in frame1.axes.get_yticklines():
     tick.set_visible(False)
 
 pp.subplot(1,2,2)
+pp.title("DHS")
 pp.pcolor(rand2, cmap=hot_color)
 pp.clim(0, 200)
 
-#pp.colorbar()
+cbar = pp.colorbar(orientation="horizontal")
+cbar.set_label("Sensitivity", size=10)
+cbar.ax.tick_params(labelsize=5)
 frame1 = pp.gca()
 
 for xlabel_i in frame1.axes.get_xticklabels():
@@ -116,7 +123,9 @@ for tick in frame1.axes.get_yticklines():
     tick.set_visible(False)
 
 
-#pp.colorbar()
+
+#cbar = pp.colorbar()
+
 frame1 = pp.gca()
 
 for xlabel_i in frame1.axes.get_xticklabels():
