@@ -82,12 +82,12 @@ hot_color = pp.cm.hot
 print("plotting...")
 pp.subplot(1,2,1)
 pp.title("Conservation")
-pp.pcolor(rand1, cmap=blrd_color)
+pp.pcolormesh(rand1, cmap=blrd_color)
 pp.clim(-4, 4)
 
-cbar = pp.colorbar(orientation="horizontal")
+cbar = pp.colorbar(orientation="horizontal",ticks=[-4, -2, 0, 2, 4])
 cbar.set_label("PhyloP", size=10)
-cbar.ax.tick_params(labelsize=5)
+cbar.ax.tick_params(labelsize=8)
 frame1 = pp.gca()
 pp.ylabel("n={0}".format(len(data1)), fontsize=16, color="black")
 for xlabel_i in frame1.axes.get_xticklabels():
@@ -103,12 +103,12 @@ for tick in frame1.axes.get_yticklines():
 
 pp.subplot(1,2,2)
 pp.title("DHS")
-pp.pcolor(rand2, cmap=hot_color)
+pp.pcolormesh(rand2, cmap=hot_color)
 pp.clim(0, 200)
 
-cbar = pp.colorbar(orientation="horizontal")
+cbar = pp.colorbar(orientation="horizontal", ticks=[0, 100, 200])
 cbar.set_label("Sensitivity", size=10)
-cbar.ax.tick_params(labelsize=5)
+cbar.ax.tick_params(labelsize=8)
 frame1 = pp.gca()
 
 for xlabel_i in frame1.axes.get_xticklabels():
